@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Input Matriks Pengaruh{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class="mb-4">DEMATEL - Input Matriks Pengaruh Langsung</h3>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Matriks Pengaruh Langsung</h4>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-3">
+                Masukkan nilai pengaruh antar-kriteria (0-4: 0 = tidak ada, 1 = rendah, 2 = sedang, 3 = lumayan tinggi, 4 = tinggi)
+            </p>
+            <form method="POST" action="{{ url_for('dematel') }}">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {% for krit in kriteria %}
+                                    <th>{{ krit['Kriteria'] }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i, krit1 in enumerate(kriteria) %}
+                                <tr>
+                                    <td>{{ krit1['Kriteria'] }}</td>
+                                    {% for j, krit2 in enumerate(kriteria) %}
+                                        <td>
+                                            {% if i == j %}
+                                                0
+                                            {% else %}
+                                                <input type="number" name="{{ i }}_{{ j }}" class="form-control form-control-sm" min="0" max="4" required placeholder="0-4">
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i>Simpan Matriks
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Perbandingan Kriteria{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4 text-center">🧮 Perbandingan Kriteria (Pairwise Comparison)</h2>
+    <form method="POST">
+        <div class="row">
+            {% set total = (kriteria|length * (kriteria|length - 1)) // 2 %}
+            {% set count = 0 %}
+            {% for i in range(kriteria|length) %}
+                {% for j in range(i+1, kriteria|length) %}
+                    {% if i != j %}
+                        {% set count = count + 1 %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm border-primary">
+                                <div class="card-header bg-primary text-white">
+                                   <!--<strong>{{ count }} / {{ total }}</strong> --> 
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        Seberapa penting <strong>{{ kriteria[i]['Kriteria'] }}</strong> dibanding <strong>{{ kriteria[j]['Kriteria'] }}</strong>?
+                                    </p>
+                                    <select class="form-select" name="{{ i }}_{{ j }}" required>
+                                        <option value="1">1 - Sama penting</option>
+                                        <option value="2">2 - Kurang lebih penting</option>
+                                        <option value="3">3 - Cukup penting</option>
+                                        <option value="4">4 - Lumayan penting</option>
+                                        <option value="5">5 - Sangat Penting</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <button class="btn btn-success btn-lg px-5" type="submit">
+                💾 Simpan Perbandingan
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

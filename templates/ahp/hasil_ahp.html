@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Hasil AHP{% endblock %}
+{% block content %}
+<div class="container">
+      <h2 class="mt-4 text-center">🧮 Hasil Analisis AHP</h2>
+    
+    <!-- Export Buttons -->
+    <div class="mb-4">
+        <a href="{{ url_for('export_ahp_excel') }}" class="btn btn-primary">Export to Excel</a>
+    </div>
+
+    <!-- Bobot Kriteria -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Bobot Kriteria</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Kriteria</th>
+                            <th>Bobot Prioritas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for krit in kriteria %}
+                        <tr>
+                            <td>{{ krit.Kriteria }}</td>
+                            <td>{{ "%.4f"|format(bobot_kriteria[loop.index0]) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ranking Alternatif -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4>Hasil Ranking Alternatif</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Ranking</th>
+                            <th>Alternatif</th>
+                            <th>Nilai Akhir</th>
+                            {% for krit in kriteria %}
+                            <th>{{ krit.Kriteria }} ({{ "%.2f"|format(bobot_kriteria[loop.index0]*100) }}%)</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alt in ranking %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td><strong>{{ alt.nama }}</strong></td>
+                            <td class="fw-bold">{{ "%.4f"|format(alt.nilai) }}</td>
+                            {% for krit in kriteria %}
+                            <td>{{ "%.4f"|format(alt.details[krit.Kriteria]) }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rekomendasi -->
+    <div class="alert alert-success mt-4">
+        <h4 class="alert-heading">Rekomendasi:</h4>
+        <p>Alternatif terbaik adalah <strong>{{ ranking[0].nama }}</strong> dengan nilai <strong>{{ "%.4f"|format(ranking[0].nilai) }}</strong></p>
+        
+        <div class="mt-3">
+            <h5>Detail Keunggulan:</h5>
+            <ul>
+                {% for krit in kriteria %}
+                <li>
+                    <strong>{{ krit.Kriteria }}</strong>: 
+                    {{ "%.2f"|format(ranking[0].details[krit.Kriteria] * 100) }}%
+                    (Rank {{ loop.index }} dari {{ ranking|length }})
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

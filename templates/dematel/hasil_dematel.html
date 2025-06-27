@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}Hasil Analisis DEMATEL{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class="mb-4">DEMATEL - Hasil Analisis</h3>
+
+    <!-- Export Buttons -->
+    <div class="mb-4">
+        <a href="{{ url_for('export_dematel_excel') }}" class="btn btn-primary">Export to Excel</a>
+
+    </div>
+
+    <!-- Penjelasan DEMATEL -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h4>Proses DEMATEL</h4>
+        </div>
+        <div class="card-body">
+            <p>DEMATEL (Decision Making Trial and Evaluation Laboratory) digunakan untuk menganalisis hubungan sebab-akibat antar kriteria. Berikut adalah tahapan perhitungan:</p>
+            <ol>
+                <li><strong>Matriks Pengaruh Langsung (D)</strong>: Matriks berisi nilai pengaruh langsung antar kriteria (0-4).</li>
+                <li><strong>Matriks Normalisasi (D_norm)</strong>: Matriks pengaruh langsung dinormalisasi dengan membagi setiap elemen dengan jumlah baris maksimum.</li>
+                <li><strong>Matriks Invers (I - D_norm)^(-1)</strong>: Menghitung invers dari matriks identitas dikurangi matriks normalisasi.</li>
+                <li><strong>Matriks Total Hubungan (T)</strong>: Diperoleh dari perkalian D_norm dengan invers (I - D_norm)^(-1).</li>
+                <li><strong>Analisis Penyebab dan Akibat</strong>: Berdasarkan jumlah baris (R) dan kolom (C) dari matriks T, dihitung prominence (R + C) dan relation (R - C) untuk menentukan status penyebab atau akibat.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Matriks Pengaruh Langsung -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Matriks Pengaruh Langsung (D)</h4>
+        </div>
+        <div class="card-body">
+            <p>Matriks ini menunjukkan pengaruh langsung antar kriteria berdasarkan input (skala 0-4).</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for krit in kriteria %}
+                                <th>{{ krit['Kriteria'] }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i, krit in enumerate(kriteria) %}
+                            <tr>
+                                <td>{{ krit['Kriteria'] }}</td>
+                                {% for j in range(kriteria|length) %}
+                                    <td>{{ direct_matrix[i][j] }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matriks Normalisasi -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Matriks Normalisasi (D_norm)</h4>
+        </div>
+        <div class="card-body">
+            <p>Matriks ini dihasilkan dengan membagi matriks pengaruh langsung dengan nilai maksimum jumlah baris.</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for krit in kriteria %}
+                                <th>{{ krit['Kriteria'] }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i, krit in enumerate(kriteria) %}
+                            <tr>
+                                <td>{{ krit['Kriteria'] }}</td>
+                                {% for j in range(kriteria|length) %}
+                                    <td>{{ "%.4f" % normalized_matrix[i][j] }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matriks Invers (I - D_norm)^(-1) -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Matriks Invers (I - D_norm)^(-1)</h4>
+        </div>
+        <div class="card-body">
+            <p>Matriks ini adalah invers dari (Identitas - Matriks Normalisasi), digunakan untuk menghitung matriks total hubungan.</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for krit in kriteria %}
+                                <th>{{ krit['Kriteria'] }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i, krit in enumerate(kriteria) %}
+                            <tr>
+                                <td>{{ krit['Kriteria'] }}</td>
+                                {% for j in range(kriteria|length) %}
+                                    <td>{{ "%.4f" % inverse_matrix[i][j] }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matriks Pengaruh Total -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Matriks Total Hubungan (T)</h4>
+        </div>
+        <div class="card-body">
+            <p>Matriks ini menunjukkan hubungan total antar kriteria, dihitung dari D_norm × (I - D_norm)^(-1).</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for krit in kriteria %}
+                                <th>{{ krit['Kriteria'] }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i, krit in enumerate(kriteria) %}
+                            <tr>
+                                <td>{{ krit['Kriteria'] }}</td>
+                                {% for j in range(kriteria|length) %}
+                                    <td>{{ "%.4f" % total_matrix[i][j] }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Analisis Penyebab dan Akibat -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Analisis Penyebab dan Akibat</h4>
+        </div>
+        <div class="card-body">
+            <p>Analisis ini menentukan apakah kriteria merupakan penyebab (R - C > 0) atau akibat (R - C < 0), serta tingkat kepentingan (R + C).</p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Kriteria</th>
+                            <th>R (Jumlah Baris)</th>
+                            <th>C (Jumlah Kolom)</th>
+                            <th>R + C (Prominence)</th>
+                            <th>R - C (Relation)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                            <tr>
+                                <td>{{ result['kriteria'] }}</td>
+                                <td>{{ "%.4f" % result['R'] }}</td>
+                                <td>{{ "%.4f" % result['C'] }}</td>
+                                <td>{{ "%.4f" % result['R_plus_C'] }}</td>
+                                <td>{{ "%.4f" % result['R_minus_C'] }}</td>
+                                <td>{{ result['cause_effect'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

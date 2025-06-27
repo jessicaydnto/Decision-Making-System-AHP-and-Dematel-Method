@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Input Alternatif{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">
+                <i class="fas fa-plus-circle me-2"></i>Tambah Alternatif Baru
+            </h3>
+        </div>
+        <div class="card-body">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('alternatif') }}">
+                <div class="mb-3">
+                    <label for="nama_alternatif" class="form-label">Nama Alternatif</label>
+                    <input type="text" class="form-control" id="nama_alternatif" name="nama_alternatif" 
+                           placeholder="Masukkan nama alternatif" required>
+                    <div class="form-text">Contoh: Alternatif A, Produk X, dll.</div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ url_for('daftar_alternatif') }}" class="btn btn-secondary me-md-2">
+                        <i class="fas fa-list me-1"></i> Lihat Daftar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

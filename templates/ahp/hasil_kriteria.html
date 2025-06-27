@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Hasil Perhitungan Kriteria{% endblock %}
+{% block content %}
+<div class="container">
+    <h3 class="mb-4">Hasil AHP - Matriks Perbandingan Kriteria</h3>
+    
+    <h5>Matriks Perbandingan:</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Kriteria</th>
+                {% for k in kriteria %}
+                    <th>{{ k['Kriteria'] }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(matrix|length) %}
+                <tr>
+                    <th>{{ kriteria[i]['Kriteria'] }}</th>
+                    {% for val in matrix[i] %}
+                        <td>{{ "%.3f"|format(val) }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h5>Matriks Normalisasi & Prioritas:</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Kriteria</th>
+                {% for k in kriteria %}
+                    <th>{{ k['Kriteria'] }}</th>
+                {% endfor %}
+                <th>Prioritas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(norm_matrix|length) %}
+                <tr>
+                    <th>{{ kriteria[i]['Kriteria'] }}</th>
+                    {% for val in norm_matrix[i] %}
+                        <td>{{ "%.3f"|format(val) }}</td>
+                    {% endfor %}
+                    <td><strong>{{ "%.4f"|format(priority[i]) }}</strong></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h5>Rasio Konsistensi:</h5>
+    <ul>
+        <li>λ<sub>max</sub>: {{ "%.4f"|format(lambda_max) }}</li>
+        <li>CI: {{ "%.4f"|format(CI) }}</li>
+        <li>CR: <strong>{{ "%.4f"|format(CR) }}</strong> 
+            {% if CR <= 0.1 %}<span class="text-success">(Konsisten)</span>{% else %}<span class="text-danger">(Tidak Konsisten)</span>{% endif %}
+        </li>
+    </ul>
+</div>
+{% endblock %}

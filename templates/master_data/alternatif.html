@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Input Alternatif{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">
+                <i class="fas fa-plus-circle me-2"></i>Tambah Alternatif Baru
+            </h3>
+        </div>
+        <div class="card-body">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('alternatif') }}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="nama_alternatif" class="form-control" 
+                           placeholder="Nama Alternatif" required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Tambah
+                    </button>
+                </div>
+            </form>
+            
+            <div class="list-group">
+                {% if session.get('alternatif') %}
+                    {% for alt in session.get('alternatif') %}
+                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        {{ alt.Nama }}
+                        <form method="POST" action="{{ url_for('hapus_alternatif', id=alt.id) }}" class="mb-0">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="list-group-item list-group-item-action">
+                        Belum ada alternatif yang ditambahkan
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

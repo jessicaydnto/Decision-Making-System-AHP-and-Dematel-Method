@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Hasil Perhitungan Alternatif{% endblock %}
+{% block content %}
+<div class="container">
+    <h3 class="mb-4">Hasil AHP - Matriks Perbandingan Alternatif</h3>
+    
+    {% for krit in kriteria %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Kriteria: {{ krit.Kriteria }}</h4>
+        </div>
+        <div class="card-body">
+            <h5>Matriks Perbandingan:</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Alternatif</th>
+                            {% for alt in alternatif %}
+                                <th>{{ alt.Nama }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(alternatif|length) %}
+                            <tr>
+                                <th>{{ alternatif[i].Nama }}</th>
+                                {% for val in hasil[krit.Kriteria]['matrix'][i] %}
+                                    <td>{{ "%.3f"|format(val) }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h5 class="mt-4">Matriks Normalisasi & Prioritas:</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Alternatif</th>
+                            {% for alt in alternatif %}
+                                <th>{{ alt.Nama }}</th>
+                            {% endfor %}
+                            <th>Prioritas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in range(alternatif|length) %}
+                            <tr>
+                                <th>{{ alternatif[i].Nama }}</th>
+                                {% for val in hasil[krit.Kriteria]['norm_matrix'][i] %}
+                                    <td>{{ "%.3f"|format(val) }}</td>
+                                {% endfor %}
+                                <td><strong>{{ "%.4f"|format(hasil[krit.Kriteria]['priority'][i]) }}</strong></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <h5 class="mt-4">Rasio Konsistensi:</h5>
+            <ul class="list-group">
+                <li class="list-group-item">λ<sub>max</sub>: {{ "%.4f"|format(hasil[krit.Kriteria]['lambda_max']) }}</li>
+                <li class="list-group-item">CI: {{ "%.4f"|format(hasil[krit.Kriteria]['CI']) }}</li>
+                <li class="list-group-item {% if hasil[krit.Kriteria]['CR'] <= 0.1 %}list-group-item-success{% else %}list-group-item-danger{% endif %}">
+                    CR: <strong>{{ "%.4f"|format(hasil[krit.Kriteria]['CR']) }}</strong>
+                    {% if hasil[krit.Kriteria]['CR'] <= 0.1 %}
+                        (Konsisten)
+                    {% else %}
+                        (Tidak Konsisten)
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

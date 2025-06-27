@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Perbandingan Alternatif{% endblock %}
+
+{% block content %}
+<div class="container">
+      <h2 class="mb-4 text-center">🧮 Perbandingan Alternatif x Kriteria </h2>
+    
+    <form method="POST">
+        {% for krit in kriteria %}
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4>{{ krit.Kriteria }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Alternatif 1</th>
+                                <th>Alternatif 2</th>
+                                <th>Nilai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(alternatif|length) %}
+                                {% for j in range(i+1, alternatif|length) %}
+                                <tr>
+                                    <td>{{ alternatif[i].Nama }}</td>
+                                    <td>{{ alternatif[j].Nama }}</td>
+                                    <td>
+                                        <select class="form-select" 
+                                                name="{{ krit.Kriteria }}_{{ i }}_{{ j }}" 
+                                                required>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <small class="text-muted">
+                    Pilih nilai alternatif pertama dibanding alternatif kedua. 
+                </small>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save me-2"></i>Simpan Perbandingan
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

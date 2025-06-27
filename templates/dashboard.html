@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+ <h2 class="mb-4">Halo, {{ admin }} 👋 </h2>
+<div class="row mt-4">
+  <div class="col-md-4">
+    <div class="card text-white bg-primary mb-3">
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-list-check me-2"></i>Total Kriteria</h5>
+        <p class="card-text fs-4">{{ total_kriteria }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-white bg-success mb-3">
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-list-ol me-2"></i>Total Alternatif</h5>
+        <p class="card-text fs-4">{{ total_alternatif }}</p>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="card mt-4">
+  <div class="card-header bg-info text-white">
+    <i class="fas fa-info-circle me-2"></i>Panduan Singkat
+  </div>
+  <div class="card-body">
+    <ul>
+      <li>Input <strong>Kriteria</strong> dan <strong>Alternatif</strong> melalui menu <em>Master Data</em>.</li>
+      <li>Lakukan perbandingan menggunakan metode <strong>AHP</strong> dan <strong>DEMATEL</strong>.</li>
+      <li>Lihat hasil perhitungan pada halaman <em>Hasil AHP</em> dan <em>Hasil DEMATEL</em>.</li>
+    </ul>
+  </div>
+</div>
+
+
+{% endblock %}
