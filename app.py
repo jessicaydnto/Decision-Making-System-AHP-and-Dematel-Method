@@ -15,13 +15,13 @@ app = Flask(__name__, template_folder='templates')
 app.jinja_env.globals.update(enumerate=enumerate)
 app.secret_key = 'base64:FR7YiZvqW21xKl1j9S4kOdhx0bPZppEYjcYbvRjQ+Yk='
 
-# Konfigurasi koneksi ke database PostgreSQL
+# koneksi ke database PostgreSQL
 try:
     conn = psycopg2.connect(
         host="127.0.0.1",
         database="proyekmcdm",
         user="postgres",
-        password="6346"
+        password="" 
     )
     cur = conn.cursor()
 except psycopg2.Error as e:
@@ -29,12 +29,12 @@ except psycopg2.Error as e:
     conn = None
     cur = None
 
-# Rute untuk halaman utama
+# Route untuk halaman utama
 @app.route('/')
 def index():
     return render_template('login.html')
 
-# Rute untuk login
+# Route untuk login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -61,7 +61,7 @@ def login():
             return redirect(url_for('login'))
     return render_template('login.html')
 
-# Rute untuk dashboard
+# Routee untuk dashboard
 @app.route('/dashboard')
 def dashboard():
     if 'admin' not in session:
@@ -84,7 +84,7 @@ def dashboard():
     )
 
 
-# Rute untuk logout
+# Route untuk logout
 @app.route('/logout')
 def logout():
     session.clear()
@@ -92,7 +92,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-# Rute untuk pengelolaan kriteria
+# Routee untuk input kriteria
 @app.route('/kriteria', methods=['GET', 'POST'])
 def kriteria():
     if 'admin' not in session:
@@ -125,7 +125,7 @@ def kriteria():
         data_kriteria=session.get('kriteria', [])
     )
 
-# Rute untuk pengelolaan alternatif
+# Rute untuk input alternatif
 @app.route('/alternatif', methods=['GET', 'POST'])
 def alternatif():
     if 'admin' not in session:
@@ -157,7 +157,7 @@ def alternatif():
                           sub_page='alternatif',
                           data_alternatif=session.get('alternatif', []))
 
-# Rute untuk menghapus alternatif
+# Route untuk delete alternatif 
 @app.route('/hapus-alternatif/<string:id>', methods=['POST'])
 def hapus_alternatif(id):
     if 'admin' not in session:
@@ -170,7 +170,7 @@ def hapus_alternatif(id):
 
     return redirect(url_for('alternatif'))
 
-# Rute untuk perbandingan kriteria (AHP)
+# Route untuk perbandingan kriteria (AHP)
 @app.route('/perbandingan_kriteria', methods=['GET', 'POST'])
 def perbandingan_kriteria():
     if 'admin' not in session:
@@ -219,7 +219,7 @@ def perbandingan_kriteria():
                           active_page='ahp',
                           sub_page='perbandingan_kriteria')
 
-# Rute untuk hasil kriteria (AHP)
+# Route untuk hasil kriteria (AHP)
 @app.route('/hasil-kriteria')
 def hasil_kriteria():
     if 'admin' not in session:
@@ -272,7 +272,7 @@ def hasil_kriteria():
                           active_page='ahp',
                           sub_page='hasil_kriteria')
 
-# Rute untuk perbandingan alternatif (AHP)
+# Route untuk perbandingan alternatif (AHP)
 @app.route('/perbandingan-alternatif', methods=['GET', 'POST'])
 def perbandingan_alternatif():
     if 'admin' not in session:
@@ -319,7 +319,7 @@ def perbandingan_alternatif():
                           active_page='ahp',
                           sub_page='perbandingan_alternatif')
 
-# Rute untuk hasil alternatif (AHP)
+# Route untuk hasil alternatif (AHP)
 @app.route('/hasil-alternatif')
 def hasil_alternatif():
     if 'admin' not in session:
@@ -373,7 +373,7 @@ def hasil_alternatif():
                           active_page='ahp',
                           sub_page='hasil_alternatif')
 
-# Rute untuk hasil akhir AHP
+# Route untuk hasil akhir AHP
 @app.route('/hasil-ahp')
 def hasil_ahp():
     if 'admin' not in session:
@@ -433,7 +433,7 @@ def hasil_ahp():
                           sub_page='hasil_ahp')
 
 
-# Rute untuk export AHP ke Excel
+# Route untuk export AHP ke Excel
 @app.route('/export-ahp-excel')
 def export_ahp_excel():
     if 'admin' not in session:
@@ -526,7 +526,7 @@ def export_ahp_excel():
     )
 
 
-# Rute untuk input DEMATEL
+# Route untuk input DEMATEL
 @app.route('/dematel', methods=['GET', 'POST'])
 def dematel():
     if 'admin' not in session:
@@ -673,7 +673,7 @@ def hasil_dematel():
         flash(f'Kesalahan sistem: {str(e)}', 'danger')
         return redirect(url_for('dematel'))
 
-# Rute untuk export DEMATEL ke Excel
+# Route untuk export DEMATEL ke Excel
 @app.route('/export-dematel-excel')
 def export_dematel_excel():
     if 'admin' not in session:
@@ -781,4 +781,5 @@ if __name__ == "__main__":
         if 'cur' in globals() and cur:
             cur.close()
         if 'conn' in globals() and conn:
+
             conn.close()
